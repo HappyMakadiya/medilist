@@ -58,6 +58,7 @@ public class NewPxActivity extends AppCompatActivity {
         onSendPdf();
     }
 
+
     private void onShowPdf() {
         Bundle bundle = new Bundle();
         bundle.putString("Disease_Name", String.valueOf(etDisName));
