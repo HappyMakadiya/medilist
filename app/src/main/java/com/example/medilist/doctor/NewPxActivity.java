@@ -91,7 +91,6 @@ public class NewPxActivity extends AppCompatActivity {
             }
         });
     }
-
     private void checkUserEmail() {
         DatabaseReference dbr = FirebaseDatabase.getInstance().getReference("Patient");
         Query q1 = dbr.orderByChild("Email").equalTo(etpatid.getText().toString());
