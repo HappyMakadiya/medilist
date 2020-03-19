@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <EditText
+        android:id="@+id/etDis"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@drawable/bgtextfield"
+        android:hint="Disease"
+        android:inputType="text"
+        android:padding="5dp" />
+
+    <Spinner
+        android:id="@+id/spDrugType"
+        android:layout_width="100dp"
+        android:layout_height="36dp"
+        android:layout_below="@id/etDis"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bgspinner"
+        android:entries="@array/drugType_array"
+        android:spinnerMode="dropdown"
+        android:tooltipText="Type Of Drug"
+        android:visibility="visible" />
+
+
+    <EditText
+        android:id="@+id/etDrugName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etDis"
+        android:layout_margin="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toRightOf="@id/spDrugType"
+        android:background="@drawable/bgtextfield"
+        android:hint="Drug Name"
+        android:padding="5dp" />
+
+    <Spinner
+        android:id="@+id/spDirec"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_below="@id/etDrugName"
+        android:layout_margin="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bgspinner"
+        android:entries="@array/direc_array" />
+
+    <Spinner
+        android:id="@+id/spFreq"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_below="@id/spDirec"
+        android:layout_margin="5dp"
+        android:background="@drawable/bgspinner"
+        android:entries="@array/freq_array" />
+
+    <EditText
+        android:id="@+id/etQuant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spFreq"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bgtextfield"
+        android:hint="Total Quantity"
+        android:inputType="number"
+        android:padding="5dp" />
+
+
+</RelativeLayout>

@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">MediList</string>
+    <string name="app_icon">App Icon</string>
+    <string name="menu_aboutus">About Us</string>
+    <string name="menu_newpx">New Prescription</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_signout">Signout</string>
+    <string-array name="drugType_array">
+        <item>---</item>
+        <item>Tab.</item>
+        <item>Cap.</item>
+        <item>Inj</item>
+        <item>Syr.</item>
+        <item>Drops</item>
+        <item>Ointment</item>
+    </string-array>
+
+    <string-array name="direc_array">
+        <item>---</item>
+        <item>Before Meal</item>
+        <item>After Meal</item>
+    </string-array>
+
+    <string-array name="freq_array">
+        <item>---</item>
+        <item>Once a Day</item>
+        <item>Twice a Day</item>
+        <item>Thrice a Day</item>
+    </string-array>
+
+</resources>

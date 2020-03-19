@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <RelativeLayout
+        android:background="#FFFFFF"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:baselineAligned="false"
+        android:fadeScrollbars="false"
+        android:isScrollContainer="false"
+        android:nestedScrollingEnabled="false"
+        android:verticalScrollbarPosition="right"
+        tools:context=".SignupActivity">
+
+
+        <TextView
+            android:id="@+id/tvSignup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="138dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="139dp"
+            android:layout_marginBottom="45dp"
+            android:text="Signup"
+            android:textColor="#3F9B96"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnSignupDr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvSignup"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="500dp"
+            android:layout_marginEnd="192dp"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/signupdoctor"
+            android:foreground="@drawable/doctorripple"
+            android:outlineProvider="none" />
+        <Button
+            android:id="@+id/btnSignupPatient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnSignupDr"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"
+            android:background="@drawable/signuppatient"
+            android:foreground="@drawable/patientripple"
+            android:gravity="center"
+            android:outlineProvider="none" />
+        <ImageView
+            android:id="@+id/ivSignup"
+            android:layout_width="114dp"
+            android:layout_height="289dp"
+            android:layout_below="@id/btnSignupPatient"
+            app:srcCompat="@drawable/nurse" />
+
+        <Button
+            android:id="@+id/btnSignupPharma"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnSignupPatient"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="76dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="40dp"
+            android:layout_toEndOf="@+id/ivSignup"
+            android:background="@drawable/signuppharmacist"
+            android:foreground="@drawable/pharmaripple"
+            android:outlineProvider="none"  />
+
+        <TextView
+            android:id="@+id/tvLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnSignupPharma"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="80dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@id/ivSignup"
+            android:text="Already have an account ? Login" />
+    </RelativeLayout>
+</ScrollView>

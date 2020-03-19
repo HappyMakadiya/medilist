@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "181412277922",
+    "firebase_url": "https://medilist-d8292.firebaseio.com",
+    "project_id": "medilist-d8292",
+    "storage_bucket": "medilist-d8292.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181412277922:android:b7cb018cdfc699622a71fb",
+        "android_client_info": {
+          "package_name": "com.example.medilist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181412277922-rsd7877gftrfuq0cqp59rh6h93l6o73s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPHOJjD_NSFavHxzp70JYlxa8-XAN0bsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181412277922-rsd7877gftrfuq0cqp59rh6h93l6o73s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

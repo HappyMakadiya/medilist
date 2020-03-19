@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".SignupAsPharmaActivity"
+        android:background="@drawable/bgsignuppharma"
+        android:baselineAligned="false"
+        android:fadeScrollbars="false"
+        android:isScrollContainer="false"
+        android:nestedScrollingEnabled="false"
+        android:verticalScrollbarPosition="right">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/btnPharmaProfilePic"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bgbtnprofilepic"
+            android:outlineProvider="none" />
+
+
+        <EditText
+            android:id="@+id/ptPharmaName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnPharmaProfilePic"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Full Name"
+            android:inputType="textPersonName"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry" />
+
+        <RadioGroup
+            android:id="@+id/rgrpGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPharmaName"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#9E9D9D"
+                android:textSize="18sp"
+                android:text="Gender" />
+
+            <RadioButton
+                android:id="@+id/rbtnMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:paddingStart="10dp"
+                android:text="Male"
+                android:textAllCaps="false"
+                android:textColor="#9E9D9D"
+                android:textSize="18sp"
+                tools:ignore="RtlSymmetry" />
+
+            <RadioButton
+                android:id="@+id/rbtnFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:paddingStart="10dp"
+                android:text="Female"
+                android:textColor="#9E9D9D"
+                android:textSize="18sp"
+                tools:ignore="RtlSymmetry" />
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/ptPharmaEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rgrpGender"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Emai ID"
+            android:inputType="textEmailAddress"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/ptPharmaPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPharmaEmail"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/ptPharmaCnfPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPharmaPass"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/ptPharmaPhNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPharmaCnfPass"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Phone Number"
+            android:inputType="phone"
+            android:paddingStart="10dp"
+            android:autofillHints="@string/common_open_on_phone" />
+
+        <EditText
+            android:id="@+id/ptPharmaStoreName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPharmaPhNo"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Medical Store Name"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/ptPharmaStoreAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPharmaStoreName"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="45dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Medical Store Address"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry" />
+
+        <Button
+            android:id="@+id/btnPharmaSignup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPharmaStoreAdd"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/bgsignup"
+            android:outlineProvider="none"
+            android:paddingBottom="10dp" />
+
+        <TextView
+            android:id="@+id/tvLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnPharmaSignup"
+            android:layout_centerHorizontal="true"
+            android:text="Already have an account ? Login" />
+
+
+
+    </RelativeLayout>
+</ScrollView>
