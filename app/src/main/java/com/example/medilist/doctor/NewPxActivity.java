@@ -90,8 +90,6 @@ public class NewPxActivity extends AppCompatActivity {
                 checkUserEmail();
             }
         });
-
-
     }
 
     private void checkUserEmail() {
