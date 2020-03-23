@@ -1,8 +1,10 @@
-package com.example.medilist;
+package com.example.medilist.doctor;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.medilist.R;
 
 public class AboutUsActivity extends AppCompatActivity {
 

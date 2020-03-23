@@ -33,19 +33,65 @@ public class LoginActivity extends AppCompatActivity {
     FirebaseAuth auth;
     String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     ProgressDialog progressDialog;
+    DatabaseReference dbrD,dbrP,dbrPh;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_splash_screen);
         auth = FirebaseAuth.getInstance();
-        if(auth.getCurrentUser()!=null){
-            startActivity(new Intent(LoginActivity.this,BasicActivity.class));
-        }
+        dbrD = FirebaseDatabase.getInstance().getReference("Doctor");
+        dbrP = FirebaseDatabase.getInstance().getReference("Patient");
+        dbrPh = FirebaseDatabase.getInstance().getReference("Pharmacist");
 
+        if(auth.getCurrentUser()!=null){
+            Query q1 = dbrD.orderByChild("ID").equalTo(auth.getCurrentUser().getUid());
+            Query q2 = dbrP.orderByChild("ID").equalTo(auth.getCurrentUser().getUid());
+            Query q3 = dbrPh.orderByChild("ID").equalTo(auth.getCurrentUser().getUid());
+
+            q1.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()) {
+                        startActivity(new Intent(LoginActivity.this, BasicActivity.class));
+                        finish();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+            q2.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()) {
+                        startActivity(new Intent(LoginActivity.this, BasicPatientActivity.class));
+                        finish();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+            q3.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()) {
+                        startActivity(new Intent(LoginActivity.this, BasicPharmacistActivity.class));
+                        finish();
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+        }
+    if(auth.getCurrentUser()==null){
         setContentView(R.layout.activity_login);
         compoAssign();
         clickLogin();
         clickSignup();
+    }
+
     }
     public void compoAssign(){
         emailEt = (EditText)findViewById(R.id.ptEmailId);
@@ -96,8 +142,50 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        startActivity(new Intent(LoginActivity.this,BasicActivity.class));
-                                        finish();
+                                        DatabaseReference dbrD = FirebaseDatabase.getInstance().getReference("Doctor");
+                                        Query q1 = dbrD.orderByChild("ID").equalTo(auth.getCurrentUser().getUid());
+                                        q1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if(dataSnapshot.exists()) {
+                                                    startActivity(new Intent(LoginActivity.this, BasicActivity.class));
+                                                    finish();
+                                                }
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            }
+                                        });
+
+                                        DatabaseReference dbrP = FirebaseDatabase.getInstance().getReference("Patient");
+                                        Query q2 = dbrP.orderByChild("ID").equalTo(auth.getCurrentUser().getUid());
+                                        q2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if(dataSnapshot.exists()) {
+                                                    startActivity(new Intent(LoginActivity.this, BasicPatientActivity.class));
+                                                    finish();
+                                                }
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            }
+                                        });
+
+                                        DatabaseReference dbrPh = FirebaseDatabase.getInstance().getReference("Pharmacist");
+                                        Query q3 = dbrPh.orderByChild("ID").equalTo(auth.getCurrentUser().getUid());
+                                        q3.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                if(dataSnapshot.exists()) {
+                                                    startActivity(new Intent(LoginActivity.this, BasicPharmacistActivity.class));
+                                                    finish();
+                                                }
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            }
+                                        });
                                     } else {
                                         String e ="Failed to login:"+task.getException().getMessage();
                                         Toast.makeText(LoginActivity.this,e, Toast.LENGTH_SHORT).show();

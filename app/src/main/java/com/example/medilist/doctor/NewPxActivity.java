@@ -1,4 +1,5 @@
 package com.example.medilist.doctor;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.medilist.R;
 import com.example.medilist.patient.PatientUser;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,9 +43,8 @@ public class NewPxActivity extends AppCompatActivity {
     DrugListAdapter lvadapter;
     Intent intent;
     TextView checkuser;
-    boolean re;
     DatabaseReference dbrRx;
-    String IDPatient;
+    String IDPatient,IDDr;
     private static String FILE = Environment.getExternalStorageDirectory() + "/prescription.pdf";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,9 +87,12 @@ public class NewPxActivity extends AppCompatActivity {
             }
         });
     }
+
     private void checkUserEmail() {
-        DatabaseReference dbr = FirebaseDatabase.getInstance().getReference("Patient");
-        Query q1 = dbr.orderByChild("Email").equalTo(etpatid.getText().toString());
+        DatabaseReference dbrPat = FirebaseDatabase.getInstance().getReference("Patient");
+        DatabaseReference dbrDr = FirebaseDatabase.getInstance().getReference("Doctor").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        Query q1 = dbrPat.orderByChild("Email").equalTo(etpatid.getText().toString());
         q1.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -96,10 +100,23 @@ public class NewPxActivity extends AppCompatActivity {
                     for(DataSnapshot ss : dataSnapshot.getChildren()){
                         IDPatient= ss.getValue(PatientUser.class).getID();
 
+                        dbrDr.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                IDDr = dataSnapshot.getValue(DocterUser.class).getName();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
 
                         Calendar calendar = Calendar.getInstance();
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
-                        String str = simpleDateFormat.format(calendar.getTime());
+                        String strDate = simpleDateFormat.format(calendar.getTime());
 
                         Uri file = Uri.fromFile(new File(FILE));
                         StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("Rx");
@@ -110,14 +127,15 @@ public class NewPxActivity extends AppCompatActivity {
                                 ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
-                                        dbrRx.child(IDPatient).child("Rx").child(str).setValue(String.valueOf(uri));
+                                        dbrRx.child(IDPatient).child("Rx").child(IDDr).child(strDate).child("Date").setValue(strDate);
+                                        dbrRx.child(IDPatient).child("Rx").child(IDDr).child(strDate).child("RxURI").setValue(String.valueOf(uri));
                                     }
                                 });
                             }
                         });
                         Toast.makeText(NewPxActivity.this, "Rx has been sent..", Toast.LENGTH_SHORT).show();
                     }
-
+                        finish();
                 }
                 else{
                     Toast.makeText(NewPxActivity.this, "Email Not Found", Toast.LENGTH_SHORT).show();
@@ -129,6 +147,8 @@ public class NewPxActivity extends AppCompatActivity {
 
             }
         });
+
+
 
     }
 

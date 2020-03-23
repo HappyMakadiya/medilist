@@ -149,7 +149,7 @@ public class SignupAsPharmaActivity extends AppCompatActivity {
                             if(task.isSuccessful()){
                                 Toast.makeText(SignupAsPharmaActivity.this, "Registration Complete", Toast.LENGTH_SHORT).show();
                                 adduser();
-                                startActivity(new Intent(SignupAsPharmaActivity.this, BasicActivity.class));
+                                startActivity(new Intent(SignupAsPharmaActivity.this, BasicPharmacistActivity.class));
                                 progressDialog.dismiss();
                                 finish();
                             }

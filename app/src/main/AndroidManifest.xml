@@ -12,11 +12,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SelectUserActivity"></activity>
-        <activity android:name=".pharmacist.BasicPharmacistActivity" />
-        <activity android:name=".patient.BasicPatientActivity" />
+
+
         <activity
-            android:name=".AboutUsActivity"
+            android:name=".patient.BasicPatientActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".patient.AboutUsPatientActivity"
+            android:parentActivityName=".patient.BasicPatientActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".patient.ProfilePatientActivity"
+            android:parentActivityName=".patient.BasicPatientActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity android:name=".pharmacist.BasicPharmacistActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".pharmacist.AboutUsPharmaActivity"
+            android:parentActivityName=".pharmacist.BasicPharmacistActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".pharmacist.ProfilePharmacistActivity"
+            android:parentActivityName=".pharmacist.BasicPharmacistActivity"
+            android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".doctor.BasicActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".doctor.AboutUsActivity"
             android:parentActivityName=".doctor.BasicActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -30,9 +55,6 @@
         <activity
             android:name=".doctor.NewPxActivity"
             android:parentActivityName=".doctor.BasicActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".doctor.BasicActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

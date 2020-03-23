@@ -11,7 +11,6 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.medilist.AboutUsActivity;
 import com.example.medilist.LoginActivity;
 import com.example.medilist.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +22,7 @@ public class BasicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_basic);
+        getSupportActionBar().setTitle("Doctor Dashboard");
 
         btncreate = (Button)findViewById(R.id.btnCreate);
         btncreate.setOnClickListener(new View.OnClickListener() {
@@ -53,5 +53,13 @@ public class BasicActivity extends AppCompatActivity {
             startActivity(new Intent(BasicActivity.this, LoginActivity.class));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent a= new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
     }
 }
