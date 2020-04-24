@@ -1,18 +1,65 @@
 package com.example.medilist.doctor;
 
 public class DrugList {
-    private String Drug_Name ,Drug_Quantity;
+    private String DiseaceName,DrugName,DrugType,DrugQuantity,DrugDirec,DrugFreq;
 
-    public DrugList(String drug_Name, String drug_Quantity) {
-        Drug_Name = drug_Name;
-        Drug_Quantity = drug_Quantity;
+    public DrugList() {
     }
 
-    public String getDrug_Name() {
-        return Drug_Name;
+    public DrugList(String diseaceName, String drugName, String drugType, String drugQuantity, String drugDirec, String drugFreq) {
+        DiseaceName = diseaceName;
+        DrugName = drugName;
+        DrugType = drugType;
+        DrugQuantity = drugQuantity;
+        DrugDirec = drugDirec;
+        DrugFreq = drugFreq;
     }
 
-    public String getDrug_Quantity() {
-        return Drug_Quantity;
+    public String getDiseaceName() {
+        return DiseaceName;
+    }
+
+    public void setDiseaceName(String diseaceName) {
+        DiseaceName = diseaceName;
+    }
+
+    public String getDrugName() {
+        return DrugName;
+    }
+
+    public void setDrugName(String drugName) {
+        DrugName = drugName;
+    }
+
+    public String getDrugType() {
+        return DrugType;
+    }
+
+    public void setDrugType(String drugType) {
+        DrugType = drugType;
+    }
+
+    public String getDrugQuantity() {
+        return DrugQuantity;
+    }
+
+    public void setDrugQuantity(String drugQuantity) {
+        DrugQuantity = drugQuantity;
+    }
+
+    public String getDrugDirec() {
+        return DrugDirec;
+    }
+
+    public void setDrugDirec(String drugDirec) {
+        DrugDirec = drugDirec;
+    }
+
+    public String getDrugFreq() {
+        return DrugFreq;
+    }
+
+    public void setDrugFreq(String drugFreq) {
+        DrugFreq = drugFreq;
     }
 }

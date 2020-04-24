@@ -206,7 +206,7 @@ public class SignupAsDRActivity extends AppCompatActivity {
         /*DocterUser docterUser = new DocterUser(Name,Degree,PhNo,HptName,HptAdd,Email,Gender,ID);
         dbr.child(ID).setValue(docterUser);*/
         dbr = dbr.child(ID);
-        dbr.child("Name").setValue(Name);
+        dbr.child("Name").setValue("Dr ".concat(Name));
         dbr.child("Email").setValue(Email);
         dbr.child("Gender").setValue(Gender);
         dbr.child("HptName").setValue(HptName);

@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
+import java.util.ArrayList;
 
 public class CreatePdf extends AppCompatActivity {
     String spDrugType,spUnit,spDirec,spFreq,etDrugName,etDose,etQuant;
@@ -43,9 +44,10 @@ public class CreatePdf extends AppCompatActivity {
         setContentView(R.layout.show_pdf_viewer);
         progressDialog = new ProgressDialog(CreatePdf.this);
         showProgDialog();
-        bundle = getIntent().getExtras();
-
+        bundle = getIntent().getBundleExtra("BundleDruglist");
+        ArrayList<DrugList> drugLists = (ArrayList<DrugList>) bundle.getSerializable("Druglist");
         setBundle();
+
         dbreff = FirebaseDatabase.getInstance().getReference().child("Doctor").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         System.out.println(FirebaseAuth.getInstance().getCurrentUser().getUid());
         dbreff.addValueEventListener(new ValueEventListener() {
@@ -81,7 +83,7 @@ public class CreatePdf extends AppCompatActivity {
         objLabel.setTextColor(RgbColor.getDarkGreen());
         objPage.getElements().add(objLabel);
 
-        objLabel = new Label("Dr. "+ drname ,0, 70, 504, 21, Font.getHelvetica(), 18, TextAlign.LEFT);
+        objLabel = new Label(drname ,0, 70, 504, 21, Font.getHelvetica(), 18, TextAlign.LEFT);
         objPage.getElements().add(objLabel);
 
         objLabel = new Label("("+ drdegree+")" ,0, 91, 504, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
