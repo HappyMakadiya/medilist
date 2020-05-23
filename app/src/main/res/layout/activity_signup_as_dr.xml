@@ -213,10 +213,17 @@
             android:layout_below="@id/ptDrHspAdd"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/bgsignup"
+            android:paddingBottom="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bgroundedbtn"
+            android:gravity="center|center_horizontal"
             android:outlineProvider="none"
-            android:paddingBottom="10dp" />
-
+            android:padding="10dp"
+            android:text="Sign up"
+            android:textColor="#FFFFFF"/>
+        android:layout_below="@id/ptDrHspAdd"
         <TextView
             android:id="@+id/tvLogin"
             android:layout_width="wrap_content"

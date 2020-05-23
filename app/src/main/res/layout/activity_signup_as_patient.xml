@@ -177,16 +177,24 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="135dp"
             android:background="@drawable/ic_dob" />
+
         <Button
             android:id="@+id/btnPatSignup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvPatDOB"
+            android:layout_below="@id/btnPatDob"
             android:layout_centerHorizontal="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="5dp"
-            android:background="@drawable/bgsignup"
+            android:background="@drawable/bgroundedbtn"
+            android:gravity="center|center_horizontal"
             android:outlineProvider="none"
-            android:paddingBottom="10dp" />
+            android:padding="10dp"
+            android:paddingBottom="10dp"
+            android:text="Sign up"
+            android:textColor="#FFFFFF" />
 
         <TextView
             android:id="@+id/tvPatLogin"

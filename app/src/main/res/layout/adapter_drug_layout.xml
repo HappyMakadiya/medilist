@@ -42,17 +42,16 @@
 
             <TextView
                 android:id="@+id/tvDrugName"
-                android:layout_width="190dp"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:paddingStart="10dp"
                 android:text="Drug"
-                android:textSize="18dp" />
+                android:textSize="18dp"
+                android:paddingStart="5dp"/>
 
             <TextView
                 android:id="@+id/tvDrugType"
                 android:layout_width="84dp"
                 android:layout_height="wrap_content"
-                android:paddingStart="5dp"
                 android:text="(tab)"
                 android:textSize="18dp" />
 
@@ -61,7 +60,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingStart="5dp"
                 android:text="(quan)"
                 android:textSize="18dp" />
         </LinearLayout>
@@ -87,7 +85,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:paddingStart="5dp"
                 android:text="Once a day "
                 android:textSize="18dp" />
         </LinearLayout>
