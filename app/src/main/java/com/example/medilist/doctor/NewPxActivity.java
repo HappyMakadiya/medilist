@@ -1,5 +1,7 @@
 package com.example.medilist.doctor;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.medilist.LoginActivity;
 import com.example.medilist.R;
 import com.example.medilist.patient.PatientUser;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,17 +44,21 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 public class NewPxActivity extends AppCompatActivity {
+    Boolean statusCreate = false;
     Spinner spDrugType,spDirec,spFreq;
     EditText etdisname,etpatid,etDrugName,etQuant,etDisName;
-    Button btnadd,btnShowPdf,btnSendpdf,btnsearch;
-
+    Button btnadd,btnShowPdf,btnSendpdf,btnsearch,btnCreatePdf;
+    ProgressDialog progressDialog;
     RecyclerView recyclerView;
     ArrayList <DrugList> lvarrayList;
     DrugListAdapter lvadapter;
-
     Intent intent;
     DatabaseReference dbrRx;
-    String IDPatient,Patname,DrName;
+    String IDPatient,Patname,DrName,strDate,strDay,strMonth,strYear;
+    Calendar calendar;
+    SimpleDateFormat date,day,month,year;
+    TextView tvsearchpatname;
+
     private static String FILE = Environment.getExternalStorageDirectory() + "/prescription.pdf";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +67,7 @@ public class NewPxActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Create Prescription");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         addcompo();
+        setDate();
         btnsearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +75,12 @@ public class NewPxActivity extends AppCompatActivity {
             }
         });
         onAddDrug();
+        btnCreatePdf.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCreatePdf();
+            }
+        });
         btnShowPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +97,40 @@ public class NewPxActivity extends AppCompatActivity {
 
     }
 
+    private void setDate() {
+        calendar = Calendar.getInstance();
+        date = new SimpleDateFormat("dd-MMM-yyyy");
+        day = new SimpleDateFormat("dd");
+        month = new SimpleDateFormat("MMM");
+        year = new SimpleDateFormat("yyyy");
+        strDate = date.format(calendar.getTime());
+        strDay = day.format(calendar.getTime());
+        strMonth = month.format(calendar.getTime());
+        strYear = year.format(calendar.getTime());
+    }
+
+    private void addcompo() {
+        progressDialog = new ProgressDialog(NewPxActivity.this);
+        etpatid = (EditText)findViewById(R.id.etPatientID);
+        btnadd = (Button)findViewById(R.id.btnAddDrug);
+        btnShowPdf = (Button)findViewById(R.id.btnShowPdf);
+        btnSendpdf = (Button)findViewById(R.id.btnSendPdf);
+        btnCreatePdf = (Button)findViewById(R.id.btnCreatePdf);
+        etDisName = (EditText)findViewById(R.id.etDis);
+        tvsearchpatname=(TextView)findViewById(R.id.tvSearchPatName);
+        btnsearch = (Button)findViewById(R.id.btnsearch);
+        recyclerView=findViewById(R.id.rvdruglist);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        lvarrayList = new ArrayList<>();
+        lvadapter = new DrugListAdapter(NewPxActivity.this,lvarrayList);
+        dbrRx = FirebaseDatabase.getInstance().getReference("Patient");
+    }
+
+    private  void onCreatePdf(){
+        new CreatePdf(lvarrayList,getApplicationContext());
+        statusCreate = true;
+    }
+
     private void checkandgetUser() {
         DatabaseReference dbrPat = FirebaseDatabase.getInstance().getReference("Patient");
         Query q1 = dbrPat.orderByChild("Email").equalTo(etpatid.getText().toString());
@@ -94,6 +142,8 @@ public class NewPxActivity extends AppCompatActivity {
                         Toast.makeText(NewPxActivity.this, "Email Found", Toast.LENGTH_SHORT).show();
                         IDPatient= ss.getValue(PatientUser.class).getID();
                         Patname = ss.getValue(PatientUser.class).getName();
+                        tvsearchpatname.setText(Patname);
+
                     }
                 }
                 else{
@@ -107,28 +157,14 @@ public class NewPxActivity extends AppCompatActivity {
         });
     }
 
-    private void addcompo() {
-        etpatid = (EditText)findViewById(R.id.etPatientID);
-        btnadd = (Button)findViewById(R.id.btnAddDrug);
-        btnShowPdf = (Button)findViewById(R.id.btnShowPdf);
-        btnSendpdf = (Button)findViewById(R.id.btnSendPdf);
-        etDisName = (EditText)findViewById(R.id.etDis);
-        btnsearch = (Button)findViewById(R.id.btnsearch);
-        recyclerView=findViewById(R.id.rvdruglist);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        lvarrayList = new ArrayList<>();
-        lvadapter = new DrugListAdapter(NewPxActivity.this,lvarrayList);
-        dbrRx = FirebaseDatabase.getInstance().getReference("Patient");
-    }
-
     private void onShowPdf() {
-
-        Bundle bundle = new Bundle();
-        intent = new Intent(NewPxActivity.this, CreatePdf.class);
-        bundle.putSerializable("Druglist",(Serializable)lvarrayList);
-        intent.putExtra("BundleDrugList",bundle);
-        startActivity(intent);
-
+        if(statusCreate){
+            intent = new Intent(NewPxActivity.this, ShowPdfViewer.class);
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(this, "First You have to create PDF!!", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -145,6 +181,7 @@ public class NewPxActivity extends AppCompatActivity {
                     if(dataSnapshot.exists()){
                         for(DataSnapshot ss : dataSnapshot.getChildren()){
                             Toast.makeText(NewPxActivity.this, "Email Found", Toast.LENGTH_SHORT).show();
+                            tvsearchpatname.setText(Patname);
                             DatabaseReference dbrDr = FirebaseDatabase.getInstance().getReference("Doctor").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             dbrDr.addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -157,18 +194,6 @@ public class NewPxActivity extends AppCompatActivity {
 
                                 }
                             });
-
-                            Calendar calendar = Calendar.getInstance();
-                            SimpleDateFormat date = new SimpleDateFormat("dd-MMM-yyyy");
-                            SimpleDateFormat day = new SimpleDateFormat("dd");
-                            SimpleDateFormat month = new SimpleDateFormat("MMM");
-                            SimpleDateFormat year = new SimpleDateFormat("yyyy");
-                            String strDate = date.format(calendar.getTime());
-                            String strDay = day.format(calendar.getTime());
-                            String strMonth = month.format(calendar.getTime());
-                            String strYear = year.format(calendar.getTime());
-
-
                             Uri file = Uri.fromFile(new File(FILE));
                             StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Rx");
                             final StorageReference ref = storageReference.child(etpatid.getText().toString()).child(Objects.requireNonNull(file.getLastPathSegment()));
@@ -226,7 +251,6 @@ public class NewPxActivity extends AppCompatActivity {
                 mb.setPositiveButton("Add", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            System.out.println(etDisName.getText().toString()+"///////////////////////////");
                             DrugList lv2c = new DrugList(etdisname.getText().toString(),etDrugName.getText().toString(),spDrugType.getSelectedItem().toString(),etQuant.getText().toString(),spDirec.getSelectedItem().toString(),spFreq.getSelectedItem().toString());
                             lvarrayList.add(lv2c);
                             lvadapter.notifyDataSetChanged();
@@ -249,11 +273,11 @@ public class NewPxActivity extends AppCompatActivity {
         });
     }
 
-
-    /*private void setSpinnerAdapter(Spinner sp,String[] st){
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(NewPxActivity.this,android.R.layout.simple_list_item_1,st);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp.setAdapter(adapter);
-    }*/
+    private void showProgDialog() {
+        progressDialog.show();
+        progressDialog.setContentView(R.layout.progress_dialog);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+    }
 
 }

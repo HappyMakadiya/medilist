@@ -1,6 +1,7 @@
 package com.example.medilist.doctor;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.cete.dynamicpdf.RgbColor;
 import com.cete.dynamicpdf.TextAlign;
 import com.cete.dynamicpdf.pageelements.Label;
 import com.cete.dynamicpdf.pageelements.Line;
+import com.example.medilist.LoginActivity;
 import com.example.medilist.R;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,26 +32,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.File;
 import java.util.ArrayList;
 
-public class CreatePdf extends AppCompatActivity {
-    String spDrugType,spUnit,spDirec,spFreq,etDrugName,etDose,etQuant;
+public class CreatePdf {
+    Context context;
     String drname,drdegree,drphno,hptname,hptadd;
-    PDFView pv;
-    Bundle bundle;
     DatabaseReference dbreff;
-    ProgressDialog progressDialog;
+    ArrayList<DrugList> drugLists;
+    String patname;
     private static String FILE = Environment.getExternalStorageDirectory() + "/prescription.pdf";
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.show_pdf_viewer);
-        progressDialog = new ProgressDialog(CreatePdf.this);
-        showProgDialog();
-        bundle = getIntent().getBundleExtra("BundleDruglist");
-        ArrayList<DrugList> drugLists = (ArrayList<DrugList>) bundle.getSerializable("Druglist");
-        setBundle();
-
+    public CreatePdf(ArrayList<DrugList> d , Context c) {
+        context = c;
+        drugLists = d;
         dbreff = FirebaseDatabase.getInstance().getReference().child("Doctor").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        System.out.println(FirebaseAuth.getInstance().getCurrentUser().getUid());
         dbreff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -58,7 +51,7 @@ public class CreatePdf extends AppCompatActivity {
                 drphno = dataSnapshot.child("PhNo").getValue().toString();
                 hptname = dataSnapshot.child("HptName").getValue().toString();
                 hptadd = dataSnapshot.child("HptAdd").getValue().toString();
-                createPDF();
+                generatePDF();
             }
 
             @Override
@@ -66,16 +59,9 @@ public class CreatePdf extends AppCompatActivity {
 
             }
         });
-
     }
-    private void showProgDialog() {
-        progressDialog.show();
-        progressDialog.setContentView(R.layout.progress_dialog);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-    }
-    private void createPDF() {
+    private void generatePDF() {
         Document objDocument = new Document();
         Page objPage = new Page(PageSize.A4, PageOrientation.PORTRAIT,54.0f);
 
@@ -102,33 +88,13 @@ public class CreatePdf extends AppCompatActivity {
         objPage.getElements().add(objLabel);
         objLabel = new Label("Patient Name: " ,0, 201, 504, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
         objPage.getElements().add(objLabel);
-
-
         objDocument.getPages().add(objPage);
         try {
-            // Outputs the document to file
-            progressDialog.dismiss();
             objDocument.draw(FILE);
-            Toast.makeText(this, "File has been written to :" + FILE,
-                    Toast.LENGTH_LONG).show();
-            File file = new File(FILE);
-            pv = (PDFView)findViewById(R.id.pdfv1);
-            pv.fromFile(file).load();
+            Toast.makeText(context, "Pdf has created", Toast.LENGTH_SHORT).show();
+
         } catch (Exception e) {
-            Toast.makeText(this,
-                    "Error, unable to write to file\n" + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Pdf has not created", Toast.LENGTH_SHORT).show();
         }
-
-    }
-
-    private void setBundle() {
-        spDrugType = bundle.getString("Drug_Type");
-        spUnit = bundle.getString("Unit");
-        spDirec = bundle.getString("Direction");
-        spFreq = bundle.getString("Frequency");
-        etDrugName = bundle.getString("Drug_Name");
-        etDose = bundle.getString("Drug_Dose");
-        etQuant = bundle.getString("Drug_Quantity");
     }
 }

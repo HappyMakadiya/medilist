@@ -39,7 +39,9 @@
         <activity android:name=".pharmacist.ProfilePharmacistActivity"
             android:parentActivityName=".pharmacist.BasicPharmacistActivity"
             android:screenOrientation="portrait" />
-
+        <activity
+            android:name=".doctor.ShowPdfViewer"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".doctor.BasicActivity"
