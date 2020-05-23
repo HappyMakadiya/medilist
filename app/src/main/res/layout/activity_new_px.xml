@@ -66,11 +66,16 @@
     <Button
         android:id="@+id/btnAddDrug"
         android:layout_width="wrap_content"
-        android:layout_height="36dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/bgadddrug" />
+        android:background="@drawable/bgroundedbtn"
+        android:gravity="center|center_horizontal"
+        android:outlineProvider="none"
+        android:padding="10dp"
+        android:text="Add Drug"
+        android:textColor="#FFFFFF"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvdruglist"
@@ -81,34 +86,53 @@
         android:layout_marginEnd="20dp">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
     <Button
         android:id="@+id/btnCreatePdf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:text="Create PDF" />
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bgroundedbtn"
+        android:gravity="center|center_horizontal"
+        android:outlineProvider="none"
+        android:padding="10dp"
+        android:text="Create PDF"
+        android:textColor="#FFFFFF"/>
     <Button
         android:id="@+id/btnShowPdf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="Show PDF"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"/>
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bgroundedbtn"
+        android:gravity="center|center_horizontal"
+        android:outlineProvider="none"
+        android:padding="10dp"
+        android:text="Show pdf"
+        android:textColor="#FFFFFF"/>
 
     <Button
-            android:id="@+id/btnSendPdf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="Send PDF"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"/>
+        android:id="@+id/btnSendPdf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bgroundedbtn"
+        android:gravity="center|center_horizontal"
+        android:outlineProvider="none"
+        android:padding="10dp"
+        android:text="send PDF"
+        android:textColor="#FFFFFF"/>
+    </LinearLayout>
 
 </LinearLayout>
 </ScrollView>

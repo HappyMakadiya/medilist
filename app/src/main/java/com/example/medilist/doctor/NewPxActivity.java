@@ -127,7 +127,7 @@ public class NewPxActivity extends AppCompatActivity {
     }
 
     private  void onCreatePdf(){
-        new CreatePdf(lvarrayList,getApplicationContext());
+        new CreatePdf(lvarrayList,getApplicationContext(),tvsearchpatname.getText().toString(),strDate);
         statusCreate = true;
     }
 

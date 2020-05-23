@@ -37,11 +37,13 @@ public class CreatePdf {
     String drname,drdegree,drphno,hptname,hptadd;
     DatabaseReference dbreff;
     ArrayList<DrugList> drugLists;
-    String patname;
+    String patname,date;
     private static String FILE = Environment.getExternalStorageDirectory() + "/prescription.pdf";
-    public CreatePdf(ArrayList<DrugList> d , Context c) {
+    public CreatePdf(ArrayList<DrugList> d , Context c , String pn ,String dt) {
         context = c;
         drugLists = d;
+        patname = pn;
+        date = dt;
         dbreff = FirebaseDatabase.getInstance().getReference().child("Doctor").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         dbreff.addValueEventListener(new ValueEventListener() {
             @Override
@@ -69,6 +71,7 @@ public class CreatePdf {
         objLabel.setTextColor(RgbColor.getDarkGreen());
         objPage.getElements().add(objLabel);
 
+
         objLabel = new Label(drname ,0, 70, 504, 21, Font.getHelvetica(), 18, TextAlign.LEFT);
         objPage.getElements().add(objLabel);
 
@@ -84,10 +87,57 @@ public class CreatePdf {
         Line ml = new  Line(0, 166, 504, 166, 5, RgbColor.getDarkGreen(), LineStyle.getSolid());
         objPage.getElements().add(ml);
 
-        objLabel = new Label("Date: " ,0, 180, 504, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+        objLabel = new Label("Date: " ,0, 180, 50, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
         objPage.getElements().add(objLabel);
-        objLabel = new Label("Patient Name: " ,0, 201, 504, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+
+        objLabel = new Label(date ,50, 180, 504, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
         objPage.getElements().add(objLabel);
+
+        objLabel = new Label("Patient Name: " ,0, 201, 110, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+        objPage.getElements().add(objLabel);
+
+        objLabel = new Label(patname ,111, 201, 504, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+        objPage.getElements().add(objLabel);
+
+        objLabel = new Label("Medicine Lists: " ,0, 250, 504, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+        objPage.getElements().add(objLabel);
+
+
+        int y=281;
+        for(int i=0;i<drugLists.size();i++){
+            objLabel = new Label("Disease Name:",10, y , 120, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            objLabel = new Label(drugLists.get(i).getDiseaceName(),150, y , 200, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            y=y+21;
+
+            objLabel = new Label("Medicine Name:",10, y, 120, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            objLabel = new Label(drugLists.get(i).getDrugName(),150, y , 200, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            y=y+21;
+
+            objLabel = new Label("Medicine Type:",10, y, 120, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            objLabel = new Label(drugLists.get(i).getDrugType(),150, y , 200, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            y=y+21;
+
+            objLabel = new Label("Medicine Quantity:",10, y, 150, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            objLabel = new Label(drugLists.get(i).getDrugQuantity(),150, y , 200, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            y=y+21;
+
+            objLabel = new Label("Time Duration:",10, y, 150, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            objLabel = new Label(drugLists.get(i).getDrugDirec()+" - " + drugLists.get(i).getDrugFreq(),150, y , 200, 21, Font.getHelvetica(), 16, TextAlign.LEFT);
+            objPage.getElements().add(objLabel);
+            y=y+41;
+
+        }
+
+
         objDocument.getPages().add(objPage);
         try {
             objDocument.draw(FILE);

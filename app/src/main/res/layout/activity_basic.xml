@@ -25,7 +25,6 @@
         android:layout_below="@id/imageView"
         android:layout_centerHorizontal="false"
         android:layout_marginTop="29dp"
-        android:fontFamily="@font/abeezee"
         android:gravity="center_horizontal"
         android:text="Create Prescription"
         android:textSize="25dp" />

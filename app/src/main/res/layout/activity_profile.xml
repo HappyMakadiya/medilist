@@ -200,7 +200,6 @@
             android:layout_below="@id/btnDrupdate"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:fontFamily="@font/abeezee"
             android:gravity="center"
             android:text="Change Password ?" />
 
