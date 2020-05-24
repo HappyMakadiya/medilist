@@ -5,5 +5,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".doctor.AboutUsActivity">
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="The best way to get your prescription"
+        android:textSize="27dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.039"
+        android:textColor="@color/colorPrimary"
+        />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:text="We are providing you the best digital prescription viewer app.The benifits of using this app is like, We provides more safety to the patient,We provide less time consuming task to the doctor.Doctor can create prescription within a minutes and give to the patient.After all we are here for you only..."
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        android:textSize="20dp"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
