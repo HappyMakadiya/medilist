@@ -39,6 +39,9 @@ public class CreatePdf {
     ArrayList<DrugList> drugLists;
     String patname,date;
     private static String FILE = Environment.getExternalStorageDirectory() + "/prescription.pdf";
+    public CreatePdf(){
+
+    }
     public CreatePdf(ArrayList<DrugList> d , Context c , String pn ,String dt) {
         context = c;
         drugLists = d;
