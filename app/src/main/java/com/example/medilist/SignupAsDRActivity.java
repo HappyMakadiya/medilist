@@ -48,7 +48,7 @@ public class SignupAsDRActivity extends AppCompatActivity {
      DatabaseReference dbr;
      StorageReference sr;
      ProgressDialog progressDialog;
-    Uri resultUri;
+     Uri resultUri;
     int i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,7 @@ public class SignupAsDRActivity extends AppCompatActivity {
         ProfileImage = (CircleImageView) findViewById(R.id.btnDrProfilePic);
         radioGenGroup = (RadioGroup) findViewById(R.id.rgrpGender);
         progressDialog = new ProgressDialog(SignupAsDRActivity.this);
-
+        resultUri = Uri.EMPTY;
     }
     public void choosepic(){
         ProfileImage.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +109,10 @@ public class SignupAsDRActivity extends AppCompatActivity {
         String emailS = emailEt.getText().toString();
         String passwordS= passwordEt.getText().toString();
         String conpasswordS = conpasswordEt.getText().toString();
-        if(TextUtils.isEmpty(nameEt.getText())){
+        if(resultUri.toString().isEmpty()) {
+            Toast.makeText(this, "Upload Your Profile Photo!", Toast.LENGTH_SHORT).show();
+            ProfileImage.requestFocus();
+        }else if(TextUtils.isEmpty(nameEt.getText())){
             nameEt.setError("Enter Your Name");
             nameEt.requestFocus();
         }else if(TextUtils.isEmpty(degreeEt.getText())){

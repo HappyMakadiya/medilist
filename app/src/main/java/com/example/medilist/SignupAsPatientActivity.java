@@ -79,7 +79,7 @@ public class SignupAsPatientActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(SignupAsPatientActivity.this);
         ProfileImage = (CircleImageView) findViewById(R.id.btnPatProfilePic);
         radioGenGroup = (RadioGroup) findViewById(R.id.rgrpGender);
-
+        resultUri = Uri.EMPTY;
     }
     public void choosepic(){
         ProfileImage.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +133,10 @@ public class SignupAsPatientActivity extends AppCompatActivity {
         String emailS = emailEt.getText().toString();
         String passwordS= passwordEt.getText().toString();
         String conpasswordS = conpasswordEt.getText().toString();
-        if(emailS.equals("") || !emailS.matches(emailPattern)){
+        if(resultUri.toString().isEmpty()) {
+            Toast.makeText(this, "Upload Your Profile Photo!", Toast.LENGTH_SHORT).show();
+            ProfileImage.requestFocus();
+        }else  if(emailS.equals("") || !emailS.matches(emailPattern)){
             emailEt.setError("Enter valid email");
             emailEt.requestFocus();
         }else if(passwordS.equals("")|| passwordS.length()<6){

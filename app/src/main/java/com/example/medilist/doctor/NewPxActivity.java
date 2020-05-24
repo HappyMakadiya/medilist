@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.medilist.LoginActivity;
 import com.example.medilist.R;
+import com.example.medilist.SignupAsDRActivity;
 import com.example.medilist.patient.PatientUser;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,7 +45,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 public class NewPxActivity extends AppCompatActivity {
-    Boolean statusCreate = false;
+    Boolean statusCreate = false,statususer=false;
     Spinner spDrugType,spDirec,spFreq;
     EditText etdisname,etpatid,etDrugName,etQuant,etDisName;
     Button btnadd,btnShowPdf,btnSendpdf,btnsearch,btnCreatePdf;
@@ -119,6 +120,7 @@ public class NewPxActivity extends AppCompatActivity {
         etDisName = (EditText)findViewById(R.id.etDis);
         tvsearchpatname=(TextView)findViewById(R.id.tvSearchPatName);
         btnsearch = (Button)findViewById(R.id.btnsearch);
+        progressDialog = new ProgressDialog(NewPxActivity.this);
         recyclerView=findViewById(R.id.rvdruglist);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         lvarrayList = new ArrayList<>();
@@ -127,11 +129,18 @@ public class NewPxActivity extends AppCompatActivity {
     }
 
     private  void onCreatePdf(){
-        new CreatePdf(lvarrayList,getApplicationContext(),tvsearchpatname.getText().toString(),strDate);
-        statusCreate = true;
+        if(statususer){
+                new CreatePdf(lvarrayList,getApplicationContext(),tvsearchpatname.getText().toString(),strDate);
+                statusCreate = true;
+        }
+        else{
+            Toast.makeText(this, "Verify Patient ID By Clicking Search Button!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void checkandgetUser() {
+
         DatabaseReference dbrPat = FirebaseDatabase.getInstance().getReference("Patient");
         Query q1 = dbrPat.orderByChild("Email").equalTo(etpatid.getText().toString());
         q1.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -139,6 +148,7 @@ public class NewPxActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
                     for(DataSnapshot ss : dataSnapshot.getChildren()){
+                        statususer = true;
                         Toast.makeText(NewPxActivity.this, "Email Found", Toast.LENGTH_SHORT).show();
                         IDPatient= ss.getValue(PatientUser.class).getID();
                         Patname = ss.getValue(PatientUser.class).getName();
@@ -158,21 +168,32 @@ public class NewPxActivity extends AppCompatActivity {
     }
 
     private void onShowPdf() {
-        if(statusCreate){
-            intent = new Intent(NewPxActivity.this, ShowPdfViewer.class);
-            startActivity(intent);
+        if(statususer){
+            if(statusCreate){
+                intent = new Intent(NewPxActivity.this, ShowPdfViewer.class);
+                startActivity(intent);
+            }
+            else {
+                Toast.makeText(this, "First You have to create PDF!!", Toast.LENGTH_SHORT).show();
+            }
         }
-        else {
-            Toast.makeText(this, "First You have to create PDF!!", Toast.LENGTH_SHORT).show();
+        else{
+            Toast.makeText(this, "Verify Patient ID By Clicking Search Button!", Toast.LENGTH_SHORT).show();
         }
+
 
     }
 
     private void onSendPdf() {
-        if(TextUtils.isEmpty(etpatid.getText())){
-            etpatid.setError("Enter Patient Email");
+        if(TextUtils.isEmpty(etpatid.getText()) || !statususer){
+            etpatid.setError("Enter Patient Email and Verify Patient ID By Clicking Search Button!");
             etpatid.requestFocus();
-        }else {
+        }
+//        if(!statususer){
+//            Toast.makeText(this, "Verify Patient ID By Clicking Search Button!", Toast.LENGTH_SHORT).show();
+//        }
+       else {
+           showProgDialog();
             DatabaseReference dbrPat = FirebaseDatabase.getInstance().getReference("Patient");
             Query q1 = dbrPat.orderByChild("Email").equalTo(etpatid.getText().toString());
             q1.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -210,10 +231,12 @@ public class NewPxActivity extends AppCompatActivity {
                                             dbrRx.child("Year").setValue(strYear);
                                             dbrRx.child("DrName").setValue(DrName);
                                             dbrRx.child("RxURI").setValue(String.valueOf(uri));
+
                                         }
                                     });
                                 }
                             });
+                            progressDialog.dismiss();
                             Toast.makeText(NewPxActivity.this, "Rx has been sent..", Toast.LENGTH_SHORT).show();
                             finish();
                         }

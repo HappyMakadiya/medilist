@@ -1,5 +1,6 @@
 package com.example.medilist;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +26,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 public class LoginActivity extends AppCompatActivity {
     EditText emailEt,passwordEt,conpasswordEt;
@@ -38,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        givepermission();
         auth = FirebaseAuth.getInstance();
         dbrD = FirebaseDatabase.getInstance().getReference("Doctor");
         dbrP = FirebaseDatabase.getInstance().getReference("Patient");
@@ -93,6 +101,28 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     }
+
+    private void givepermission() {
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse response) {
+
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+    }
+
     public void compoAssign(){
         emailEt = (EditText)findViewById(R.id.ptEmailId);
         passwordEt = (EditText)findViewById(R.id.ptPassword);
@@ -132,6 +162,7 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (validate()) {
                     showProgDialog();
                     String email = emailEt.getText().toString();
@@ -187,9 +218,10 @@ public class LoginActivity extends AppCompatActivity {
                                             }
                                         });
                                     } else {
+                                        progressDialog.dismiss();
                                         String e ="Failed to login:"+task.getException().getMessage();
                                         Toast.makeText(LoginActivity.this,e, Toast.LENGTH_SHORT).show();
-                                        progressDialog.dismiss();
+
                                     }
 
                                     // ...

@@ -1,9 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".patient.ProfilePatientActivity">
+    android:fillViewport="true">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".SignupAsDRActivity"
+
+        android:baselineAligned="false"
+        android:fadeScrollbars="false"
+        android:isScrollContainer="false"
+        android:nestedScrollingEnabled="false"
+        android:verticalScrollbarPosition="right">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/btnPatProfilePic"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="150dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bgbtnprofilepic"
+            android:outlineProvider="none" />
+
+        <EditText
+            android:id="@+id/ptPatName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnPatProfilePic"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Full Name"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry" />
+
+        <RadioGroup
+            android:id="@+id/rgrpGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPatName"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvGender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:textColor="#9E9D9D"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/rbtnMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:paddingStart="10dp"
+                android:text="Male"
+                android:textAllCaps="false"
+                android:textColor="#9E9D9D"
+                android:textSize="18sp"
+                tools:ignore="RtlSymmetry" />
+
+            <RadioButton
+                android:id="@+id/rbtnFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:paddingStart="10dp"
+                android:text="Female"
+                android:textColor="#9E9D9D"
+                android:textSize="18sp"
+                tools:ignore="RtlSymmetry" />
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/ptPatEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rgrpGender"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Emai ID"
+            android:inputType="textEmailAddress"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry" />
+
+
+
+        <EditText
+            android:id="@+id/ptPatPhNo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPatEmail"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/bgtextfield"
+            android:ems="10"
+            android:hint="Phone Number"
+            android:inputType="phone"
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry"
+            android:autofillHints="@string/common_open_on_phone" />
+
+        <TextView
+            android:id="@+id/tvPatDOB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPatPhNo"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="45dp"
+            android:text="Date Of Birth"
+            android:textColor="#9E9D9D"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tvDOBView"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptPatPhNo"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@id/tvPatDOB"
+            android:background="@drawable/bgtextfield"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:text="--/--/----" />
+
+        <Button
+            android:id="@+id/btnPatDob"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_below="@id/ptPatPhNo"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="135dp"
+            android:background="@drawable/ic_dob" />
+
+        <Button
+            android:id="@+id/btnaskupdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnPatDob"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/bgroundedbtn"
+            android:gravity="center|center_horizontal"
+            android:outlineProvider="none"
+            android:padding="10dp"
+            android:text="Want To Update?"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/btnupdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvDOBView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/bgroundedbtn"
+            android:gravity="center|center_horizontal"
+            android:outlineProvider="none"
+            android:padding="10dp"
+            android:text="save"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/tvchngpass"
+            android:layout_width="147dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnupdate"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Change Password ?" />
+
+
+
+
+
+    </RelativeLayout>
+</ScrollView>

@@ -223,7 +223,6 @@
             android:padding="10dp"
             android:text="Sign up"
             android:textColor="#FFFFFF"/>
-        android:layout_below="@id/ptDrHspAdd"
         <TextView
             android:id="@+id/tvLogin"
             android:layout_width="wrap_content"
