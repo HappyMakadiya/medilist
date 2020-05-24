@@ -216,8 +216,10 @@ public class NewPxActivity extends AppCompatActivity {
                                 }
                             });
                             Uri file = Uri.fromFile(new File(FILE));
+                            long randomNumber = (long) (Math.random()*Math.pow(10,10));
+                            String strrno = Long.toString(randomNumber);
                             StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Rx");
-                            final StorageReference ref = storageReference.child(etpatid.getText().toString()).child(Objects.requireNonNull(file.getLastPathSegment()));
+                            final StorageReference ref = storageReference.child(etpatid.getText().toString()).child(Objects.requireNonNull(strrno.concat(Objects.requireNonNull(file.getLastPathSegment()))));
                             ref.putFile(file).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                 @Override
                                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
