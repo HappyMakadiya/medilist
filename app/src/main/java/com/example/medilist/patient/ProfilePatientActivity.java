@@ -88,7 +88,7 @@ public class ProfilePatientActivity extends AppCompatActivity {
                 else{
                     radioGenGroup.check(R.id.rbtnFemale);
                 }
-                Glide.with(ProfilePatientActivity.this).load(struri).into(ProfileImage);
+                Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
             }
 
             @Override
@@ -171,7 +171,7 @@ public class ProfilePatientActivity extends AppCompatActivity {
             radioGenGroup.getChildAt(i).setEnabled(true);
         }
 
-        ProfileImage.setFocusableInTouchMode(true);
+        btnupdate.setClickable(true);
 
         btnDOB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,6 +191,25 @@ public class ProfilePatientActivity extends AppCompatActivity {
                 updatedatabase();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                resultUri = result.getUri();
+                ProfileImage.setImageURI(resultUri);
+                upload(resultUri);
+            }else if(resultCode == RESULT_CANCELED){
+                Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
+            }else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     private void updatedob() {
@@ -246,11 +265,15 @@ public class ProfilePatientActivity extends AppCompatActivity {
         dbr.child("Gender").setValue(gender);
         dbr.child("PhNo").setValue(strphno);
         dbr.child("DOB").setValue(strdob);
+
+
     }
 
     void upload(Uri uri){
-        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("PatientImages");
-        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(uri.getLastPathSegment()));
+        long randomNumber = (long) (Math.random()*Math.pow(10,10));
+        String strrno = Long.toString(randomNumber);
+        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("PatientImages").child(stremail);
+        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(strrno.concat(Objects.requireNonNull(uri.getLastPathSegment()))));
         ref.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -262,24 +285,6 @@ public class ProfilePatientActivity extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                resultUri = result.getUri();
-                ProfileImage.setImageURI(null);
-                ProfileImage.setImageURI(resultUri);
-                upload(resultUri);
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
-
-        }
     }
 
     private void changepassfunc(){

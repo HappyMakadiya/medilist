@@ -33,6 +33,7 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -53,6 +54,7 @@ public class SignupAsPatientActivity extends AppCompatActivity {
     DatabaseReference dbr;
     ProgressDialog progressDialog;
     Uri resultUri;
+    String patemail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,12 +98,13 @@ public class SignupAsPatientActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
-                ProfileImage.setImageURI(null);
                 ProfileImage.setImageURI(resultUri);
-
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            }else if(resultCode == RESULT_CANCELED){
+                resultUri=Uri.parse("android.resource://"+this.getPackageName()+"/drawable/bgbtnprofilepic");
+                ProfileImage.setImageURI(resultUri);
+            }else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -133,10 +136,7 @@ public class SignupAsPatientActivity extends AppCompatActivity {
         String emailS = emailEt.getText().toString();
         String passwordS= passwordEt.getText().toString();
         String conpasswordS = conpasswordEt.getText().toString();
-        if(resultUri.toString().isEmpty()) {
-            Toast.makeText(this, "Upload Your Profile Photo!", Toast.LENGTH_SHORT).show();
-            ProfileImage.requestFocus();
-        }else  if(emailS.equals("") || !emailS.matches(emailPattern)){
+        if(emailS.equals("") || !emailS.matches(emailPattern)){
             emailEt.setError("Enter valid email");
             emailEt.requestFocus();
         }else if(passwordS.equals("")|| passwordS.length()<6){
@@ -195,6 +195,7 @@ public class SignupAsPatientActivity extends AppCompatActivity {
         radioGenButton = (RadioButton) findViewById(radioGenGroup.getCheckedRadioButtonId());
         String Name = nameEt.getText().toString();
         String Email = emailEt.getText().toString().trim();
+        patemail = Email;
         String Gender = radioGenButton.getText().toString();
         String PhNo = phnoEt.getText().toString();
         String dob=showDOB.getText().toString();
@@ -209,13 +210,18 @@ public class SignupAsPatientActivity extends AppCompatActivity {
         dbr.child("PhNo").setValue(PhNo);
         dbr.child("DOB").setValue(dob);
         dbr.child("ID").setValue(ID);
+        if(resultUri.getPath().isEmpty()){
+            resultUri=Uri.parse("android.resource://"+this.getPackageName()+"/drawable/bgbtnprofilepic");
+            ProfileImage.setImageURI(resultUri);
+        }
         upload(resultUri);
     }
 
     void upload(Uri uri){
-
-        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("PatientImages");
-        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(uri.getLastPathSegment()));
+        long randomNumber = (long) (Math.random()*Math.pow(10,10));
+        String strrno = Long.toString(randomNumber);
+        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("PatientImages").child(patemail);
+        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(strrno.concat(Objects.requireNonNull(uri.getLastPathSegment()))));
         ref.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.NotNull;
@@ -31,6 +32,7 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.File;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,6 +51,7 @@ public class SignupAsDRActivity extends AppCompatActivity {
      StorageReference sr;
      ProgressDialog progressDialog;
      Uri resultUri;
+     String dremail;
     int i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +96,13 @@ public class SignupAsDRActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
-                ProfileImage.setImageURI(null);
                 ProfileImage.setImageURI(resultUri);
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            }else if(resultCode == RESULT_CANCELED){
+                resultUri=Uri.parse("android.resource://"+this.getPackageName()+"/drawable/bgbtnprofilepic");
+                ProfileImage.setImageURI(resultUri);
+            }else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
         }
@@ -109,10 +114,7 @@ public class SignupAsDRActivity extends AppCompatActivity {
         String emailS = emailEt.getText().toString();
         String passwordS= passwordEt.getText().toString();
         String conpasswordS = conpasswordEt.getText().toString();
-        if(resultUri.toString().isEmpty()) {
-            Toast.makeText(this, "Upload Your Profile Photo!", Toast.LENGTH_SHORT).show();
-            ProfileImage.requestFocus();
-        }else if(TextUtils.isEmpty(nameEt.getText())){
+        if(TextUtils.isEmpty(nameEt.getText())){
             nameEt.setError("Enter Your Name");
             nameEt.requestFocus();
         }else if(TextUtils.isEmpty(degreeEt.getText())){
@@ -148,6 +150,7 @@ public class SignupAsDRActivity extends AppCompatActivity {
         }
         return result;
     }
+
     public void clickLogin(){
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +159,7 @@ public class SignupAsDRActivity extends AppCompatActivity {
             }
         });
     }
+
     public void clickSignup() {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +207,7 @@ public class SignupAsDRActivity extends AppCompatActivity {
         String HptName = hptNameEt.getText().toString();
         String HptAdd = hptAddEt.getText().toString();
         String Email = emailEt.getText().toString().trim();
+        dremail = Email;
         String Gender = radioGenButton.getText().toString();
         ID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -218,13 +223,18 @@ public class SignupAsDRActivity extends AppCompatActivity {
         dbr.child("Degree").setValue(Degree);
         dbr.child("ID").setValue(ID);
 
+        if(resultUri.getPath().isEmpty()){
+            resultUri=Uri.parse("android.resource://"+this.getPackageName()+"/drawable/bgbtnprofilepic");
+            ProfileImage.setImageURI(resultUri);
+        }
         upload(resultUri);
     }
 
     void upload(Uri uri){
-
-        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("DoctorImages");
-        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(uri.getLastPathSegment()));
+        long randomNumber = (long) (Math.random()*Math.pow(10,10));
+        String strrno = Long.toString(randomNumber);
+        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("DoctorImages").child(dremail);
+        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(strrno.concat(Objects.requireNonNull(uri.getLastPathSegment()))));
         ref.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {

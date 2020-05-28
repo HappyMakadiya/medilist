@@ -87,7 +87,7 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
                 else{
                     radioGenGroup.check(R.id.rbtnFemale);
                 }
-                Glide.with(ProfileActivity.this).load(struri).into(ProfileImage);
+                Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
             }
 
             @Override
@@ -173,7 +173,7 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
         for(int i=0;i< radioGenGroup.getChildCount();i++){
             radioGenGroup.getChildAt(i).setEnabled(true);
         }
-        ProfileImage.setFocusableInTouchMode(true);
+        btnupdate.setClickable(true);
         ProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,11 +240,14 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
         dbr.child("HptAdd").setValue(hptadd);
         dbr.child("PhNo").setValue(drphno);
         dbr.child("Degree").setValue(drdegree);
+
     }
 
     void upload(Uri uri){
-        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("DoctorImages");
-        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(uri.getLastPathSegment()));
+        long randomNumber = (long) (Math.random()*Math.pow(10,10));
+        String strrno = Long.toString(randomNumber);
+        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("DoctorImages").child(dremail);
+        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(strrno.concat(Objects.requireNonNull(uri.getLastPathSegment()))));
         ref.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -256,6 +259,8 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
                 });
             }
         });
+
+
     }
 
     @Override
@@ -265,14 +270,15 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
-                ProfileImage.setImageURI(null);
                 ProfileImage.setImageURI(resultUri);
                 upload(resultUri);
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            }else if(resultCode == RESULT_CANCELED){
+                Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
+                upload(resultUri);
+            }else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 
