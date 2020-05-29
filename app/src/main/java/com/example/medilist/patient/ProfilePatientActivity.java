@@ -24,7 +24,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.medilist.LoginActivity;
 import com.example.medilist.R;
+import com.example.medilist.doctor.ProfileActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,11 +62,14 @@ public class ProfilePatientActivity extends AppCompatActivity {
     Button btnaskupdate,btnupdate,btnDOB;
     CircleImageView ProfileImage;
     Uri resultUri;
+    StorageReference storageReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_patient);
+
         addcompo();
+        showProgDialog();
         getSupportActionBar().setTitle("Patient Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -89,6 +94,7 @@ public class ProfilePatientActivity extends AppCompatActivity {
                     radioGenGroup.check(R.id.rbtnFemale);
                 }
                 Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
+                progressDialog.dismiss();
             }
 
             @Override
@@ -200,7 +206,6 @@ public class ProfilePatientActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 resultUri = result.getUri();
-                ProfileImage.setImageURI(resultUri);
                 upload(resultUri);
             }else if(resultCode == RESULT_CANCELED){
                 Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
@@ -265,24 +270,37 @@ public class ProfilePatientActivity extends AppCompatActivity {
         dbr.child("Gender").setValue(gender);
         dbr.child("PhNo").setValue(strphno);
         dbr.child("DOB").setValue(strdob);
-
-
+        addProfileToDB();
     }
 
-    void upload(Uri uri){
+    private void addProfileToDB() {
+        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                dbr.child("ProfilePhoto").setValue(String.valueOf(uri));
+            }
+        });
+    }
+
+    void upload(Uri resultUri){
+        showProgDialog();
+        Toast.makeText(this, "Into Upload", Toast.LENGTH_SHORT).show();
         long randomNumber = (long) (Math.random()*Math.pow(10,10));
         String strrno = Long.toString(randomNumber);
-        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("PatientImages").child(stremail);
-        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(strrno.concat(Objects.requireNonNull(uri.getLastPathSegment()))));
-        ref.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+        storageReference= FirebaseStorage.getInstance().getReference().child("PatientImages");
+        storageReference = storageReference.child("ProfilePic").child(strrno.concat(resultUri.getLastPathSegment()));
+        storageReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        dbr.child("ProfilePhoto").setValue(String.valueOf(uri));
-                    }
-                });
+                progressDialog.dismiss();
+                Glide.with(getApplicationContext()).load(resultUri).into(ProfileImage);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(ProfilePatientActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
             }
         });
     }

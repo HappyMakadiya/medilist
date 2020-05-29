@@ -27,7 +27,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/bgbtnprofilepic"
+            android:background="@drawable/profilephoto"
             android:foregroundGravity="center"
             android:outlineProvider="none" />
 

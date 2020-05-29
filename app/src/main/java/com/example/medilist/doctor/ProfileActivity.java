@@ -24,6 +24,7 @@ import com.example.medilist.R;
 import com.example.medilist.SignupAsDRActivity;
 import com.github.barteksc.pdfviewer.source.UriSource;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -56,14 +57,16 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
     Button btnaskupdate,btnupdate;
     CircleImageView ProfileImage;
     Uri resultUri;
+    StorageReference storageReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
         addcompo();
+        showProgDialog();
         getSupportActionBar().setTitle("Doctor Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         dbr.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -88,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
                     radioGenGroup.check(R.id.rbtnFemale);
                 }
                 Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
+                progressDialog.dismiss();
             }
 
             @Override
@@ -127,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
         btnaskupdate=findViewById(R.id.btnaskupdate);
         btnupdate=findViewById(R.id.btnupdate);
         ProfileImage = (CircleImageView) findViewById(R.id.btnDrProfilePic);
+        progressDialog = new ProgressDialog(ProfileActivity.this);
     }
 
     private void setValue() {
@@ -174,6 +179,7 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
             radioGenGroup.getChildAt(i).setEnabled(true);
         }
         btnupdate.setClickable(true);
+
         ProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,6 +192,23 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
                 updatedatabase();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                resultUri = result.getUri();
+                upload(resultUri);
+            }else if(resultCode == RESULT_CANCELED){
+                Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
+            }else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void updatedatabase() {
@@ -240,46 +263,34 @@ public class ProfileActivity extends AppCompatActivity { EditText pass,cnfpass;
         dbr.child("HptAdd").setValue(hptadd);
         dbr.child("PhNo").setValue(drphno);
         dbr.child("Degree").setValue(drdegree);
-
+        addProfileToDB();
     }
-
-    void upload(Uri uri){
-        long randomNumber = (long) (Math.random()*Math.pow(10,10));
-        String strrno = Long.toString(randomNumber);
-        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("DoctorImages").child(dremail);
-        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(strrno.concat(Objects.requireNonNull(uri.getLastPathSegment()))));
-        ref.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    private void addProfileToDB() {
+        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        dbr.child("ProfilePhoto").setValue(String.valueOf(uri));
-                    }
-                });
+            public void onSuccess(Uri uri) {
+                dbr.child("ProfilePhoto").setValue(String.valueOf(uri));
             }
         });
-
-
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                resultUri = result.getUri();
-                ProfileImage.setImageURI(resultUri);
-                upload(resultUri);
-            }else if(resultCode == RESULT_CANCELED){
-                Glide.with(getApplicationContext()).load(struri).into(ProfileImage);
-                upload(resultUri);
-            }else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-                Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
+    void upload(Uri resultUri){
+        showProgDialog();
+        long randomNumber = (long) (Math.random()*Math.pow(10,10));
+        String strrno = Long.toString(randomNumber);
+        storageReference= FirebaseStorage.getInstance().getReference().child("DoctorImages");
+        storageReference = storageReference.child("ProfilePic").child(strrno.concat(resultUri.getLastPathSegment()));
+        storageReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                progressDialog.dismiss();
+                Glide.with(getApplicationContext()).load(resultUri).into(ProfileImage);
             }
-        }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void changepassfunc(){

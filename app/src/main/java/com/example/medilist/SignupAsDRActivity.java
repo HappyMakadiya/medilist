@@ -1,5 +1,4 @@
 package com.example.medilist;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,17 +11,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.bumptech.glide.Glide;
 import com.example.medilist.doctor.BasicActivity;
-import com.example.medilist.doctor.DocterUser;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.NotNull;
@@ -32,7 +30,6 @@ import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.io.File;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -48,11 +45,11 @@ public class SignupAsDRActivity extends AppCompatActivity {
      String ID;
      FirebaseAuth auth;
      DatabaseReference dbr;
-     StorageReference sr;
+     StorageReference storageReference;
      ProgressDialog progressDialog;
      Uri resultUri;
      String dremail;
-    int i;
+     int testupload=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,27 +76,29 @@ public class SignupAsDRActivity extends AppCompatActivity {
         ProfileImage = (CircleImageView) findViewById(R.id.btnDrProfilePic);
         radioGenGroup = (RadioGroup) findViewById(R.id.rgrpGender);
         progressDialog = new ProgressDialog(SignupAsDRActivity.this);
-        resultUri = Uri.EMPTY;
+        resultUri = Uri.parse("android.resource://"+this.getPackageName()+"/drawable/profilephoto");
+        Glide.with(getApplicationContext()).load(resultUri).into(ProfileImage);
     }
     public void choosepic(){
         ProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 CropImage.activity().setGuidelines(CropImageView.Guidelines.ON).start(SignupAsDRActivity.this);
             }
         });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
+                testupload++;
                 resultUri = result.getUri();
-                ProfileImage.setImageURI(resultUri);
-            }else if(resultCode == RESULT_CANCELED){
-                resultUri=Uri.parse("android.resource://"+this.getPackageName()+"/drawable/bgbtnprofilepic");
-                ProfileImage.setImageURI(resultUri);
+                upload(resultUri);
+
             }else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
                 Toast.makeText(this, error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -108,8 +107,8 @@ public class SignupAsDRActivity extends AppCompatActivity {
         }
     }
 
-
     private boolean validate(){
+
         boolean result = false;
         String emailS = emailEt.getText().toString();
         String passwordS= passwordEt.getText().toString();
@@ -144,6 +143,9 @@ public class SignupAsDRActivity extends AppCompatActivity {
         }else if(!conpasswordS.equals(passwordS)){
             conpasswordEt.setError("Password doesn't match");
             conpasswordEt.requestFocus();
+        } else if(testupload == 0){
+            Toast.makeText(this, "Please Upload Your Profile Photo", Toast.LENGTH_SHORT).show();
+            ProfileImage.requestFocus();
         }
         else{
             result = true;
@@ -169,7 +171,8 @@ public class SignupAsDRActivity extends AppCompatActivity {
                     showProgDialog();
                     final String user_email = emailEt.getText().toString().trim();
                     final String user_password = passwordEt.getText().toString().trim();
-                    auth.createUserWithEmailAndPassword(user_email, user_password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    auth.createUserWithEmailAndPassword(user_email, user_password)
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NotNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
@@ -182,6 +185,12 @@ public class SignupAsDRActivity extends AppCompatActivity {
                                 Toast.makeText(SignupAsDRActivity.this, e, Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                             }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(SignupAsDRActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -199,7 +208,6 @@ public class SignupAsDRActivity extends AppCompatActivity {
     }
 
     public void adduser() {
-
         radioGenButton = (RadioButton) findViewById(radioGenGroup.getCheckedRadioButtonId());
         String Name = nameEt.getText().toString();
         String Degree = degreeEt.getText().toString();
@@ -211,8 +219,6 @@ public class SignupAsDRActivity extends AppCompatActivity {
         String Gender = radioGenButton.getText().toString();
         ID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        /*DocterUser docterUser = new DocterUser(Name,Degree,PhNo,HptName,HptAdd,Email,Gender,ID);
-        dbr.child(ID).setValue(docterUser);*/
         dbr = dbr.child(ID);
         dbr.child("Name").setValue("Dr ".concat(Name));
         dbr.child("Email").setValue(Email);
@@ -223,29 +229,42 @@ public class SignupAsDRActivity extends AppCompatActivity {
         dbr.child("Degree").setValue(Degree);
         dbr.child("ID").setValue(ID);
 
-        if(resultUri.getPath().isEmpty()){
-            resultUri=Uri.parse("android.resource://"+this.getPackageName()+"/drawable/bgbtnprofilepic");
-            ProfileImage.setImageURI(resultUri);
-        }
-        upload(resultUri);
+        addProfileToDB();
     }
 
-    void upload(Uri uri){
-        long randomNumber = (long) (Math.random()*Math.pow(10,10));
-        String strrno = Long.toString(randomNumber);
-        StorageReference storageReference= FirebaseStorage.getInstance().getReference().child("DoctorImages").child(dremail);
-        final StorageReference ref = storageReference.child("ProfilePic").child(Objects.requireNonNull(strrno.concat(Objects.requireNonNull(uri.getLastPathSegment()))));
-        ref.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    private void addProfileToDB() {
+        storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        dbr.child("ProfilePhoto").setValue(String.valueOf(uri));
-                    }
-                });
+            public void onSuccess(Uri uri) {
+                dbr.child("ProfilePhoto").setValue(String.valueOf(uri));
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SignupAsDRActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    void upload(Uri resultUri){
+        showProgDialog();
+        long randomNumber = (long) (Math.random()*Math.pow(10,10));
+        String strrno = Long.toString(randomNumber);
+        storageReference= FirebaseStorage.getInstance().getReference().child("DoctorImages");
+        storageReference = storageReference.child("ProfilePic").child(strrno.concat(resultUri.getLastPathSegment()));
+        storageReference.putFile(resultUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                progressDialog.dismiss();
+                Glide.with(getApplicationContext()).load(resultUri).into(ProfileImage);
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+                Toast.makeText(SignupAsDRActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
